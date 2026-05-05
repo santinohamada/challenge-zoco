@@ -1,20 +1,49 @@
-import { getSupabaseServerClient } from "@/lib/supabase/server";
+"use client";
+
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase/client";
 import EventTable from "@/components/eventos/EventTable";
 import Link from "next/link";
+import type { Evento } from "@/types/database";
 
-export default async function EventosPage() {
-  const supabase = getSupabaseServerClient();
+export default function EventosPage() {
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const { data: eventos, error } = await supabase
-    .from("eventos")
-    .select("*")
-    .order("fecha_evento", { ascending: true });
+  const fetchEventos = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("eventos")
+      .select("*")
+      .order("fecha_evento", { ascending: true });
 
-  if (error) {
-    console.error("Error fetching eventos:", error);
-    // En producción, usarías un componente de error handling
-    return <div>Error al cargar los eventos</div>;
-  }
+    if (error) {
+      console.error("Error fetching eventos:", error);
+      setError("No se pudieron cargar los eventos.");
+    } else {
+      setEventos(data || []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchEventos();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("eventos").delete().eq("id", id);
+    if (error) {
+      console.error("Error deleting evento:", error);
+      alert("Error al eliminar el evento.");
+    } else {
+      // Refrescar la lista (simple refresh)
+      fetchEventos();
+    }
+  };
+
+  if (loading) return <div>Cargando eventos...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="space-y-4">
@@ -28,7 +57,7 @@ export default async function EventosPage() {
         </Link>
       </div>
 
-      <EventTable eventos={eventos || []} />
+      <EventTable eventos={eventos} onDelete={handleDelete} />
     </div>
   );
 }

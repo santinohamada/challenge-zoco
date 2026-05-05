@@ -1,16 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import type { Evento } from "@/types/database";
 import { useRouter } from "next/navigation";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 interface EventTableProps {
   eventos: Evento[];
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
-export default function EventTable({ eventos }: Omit<EventTableProps, 'onEdit' | 'onDelete'>) {
+export default function EventTable({ eventos, onDelete }: EventTableProps) {
   const router = useRouter();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id);
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedId) {
+      await onDelete(selectedId);
+    }
+    setConfirmOpen(false);
+    setSelectedId(null);
+  };
   if (eventos.length === 0) {
     return (
       <div className="text-center py-10 text-muted-foreground">
@@ -55,13 +71,13 @@ export default function EventTable({ eventos }: Omit<EventTableProps, 'onEdit' |
               <td className="p-4 align-middle">{evento.categoria || "—"}</td>
               <td className="p-4 align-middle text-right space-x-2">
                 <button
-                  onClick={() => router.push(`/dashboard/eventos/${evento.id}/edit`)}
+                  onClick={() => router.push(`/dashboard/eventos/${evento.id}`)}
                   className="text-sm text-blue-600 hover:underline"
                 >
                   Editar
                 </button>
                 <button
-                  onClick={() => router.push(`/dashboard/eventos/${evento.id}/delete`)}
+                  onClick={() => handleDeleteClick(evento.id)}
                   className="text-sm text-red-600 hover:underline"
                 >
                   Eliminar
@@ -72,5 +88,21 @@ export default function EventTable({ eventos }: Omit<EventTableProps, 'onEdit' |
         </tbody>
       </table>
     </div>
+  );
+
+  return (
+    <>
+      {tableContent}
+      <ConfirmDialog
+        isOpen={confirmOpen}
+        title="Confirmar Eliminación"
+        message="¿Estás seguro de que querés eliminar este evento? Esta acción no se puede deshacer."
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        isDestructive={true}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
+    </>
   );
 }
