@@ -1,4 +1,7 @@
+"use client";
+
 import type { Evento } from "@/types/database";
+import { useRouter } from "next/navigation";
 
 interface EventTableProps {
   eventos: Evento[];
@@ -6,7 +9,8 @@ interface EventTableProps {
   onDelete: (id: string) => void;
 }
 
-export default function EventTable({ eventos, onEdit, onDelete }: EventTableProps) {
+export default function EventTable({ eventos }: Omit<EventTableProps, 'onEdit' | 'onDelete'>) {
+  const router = useRouter();
   if (eventos.length === 0) {
     return (
       <div className="text-center py-10 text-muted-foreground">
@@ -51,13 +55,13 @@ export default function EventTable({ eventos, onEdit, onDelete }: EventTableProp
               <td className="p-4 align-middle">{evento.categoria || "—"}</td>
               <td className="p-4 align-middle text-right space-x-2">
                 <button
-                  onClick={() => onEdit(evento.id)}
+                  onClick={() => router.push(`/dashboard/eventos/${evento.id}/edit`)}
                   className="text-sm text-blue-600 hover:underline"
                 >
                   Editar
                 </button>
                 <button
-                  onClick={() => onDelete(evento.id)}
+                  onClick={() => router.push(`/dashboard/eventos/${evento.id}/delete`)}
                   className="text-sm text-red-600 hover:underline"
                 >
                   Eliminar

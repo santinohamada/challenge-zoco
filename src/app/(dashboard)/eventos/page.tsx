@@ -28,11 +28,7 @@ export default async function EventosPage() {
         </Link>
       </div>
 
-      <EventTable
-        eventos={eventos || []}
-        onEdit={(id) => console.log("Editar:", id)}
-        onDelete={(id) => console.log("Eliminar:", id)}
-      />
+      <EventTable eventos={eventos || []} />
     </div>
   );
 }
