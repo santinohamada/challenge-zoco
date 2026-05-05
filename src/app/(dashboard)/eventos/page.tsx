@@ -53,14 +53,16 @@ export default function EventosPage() {
     fetchEventos();
   }, []);
 
+  const { showToast } = useToast();
+
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("eventos").delete().eq("id", id);
     if (error) {
       console.error("Error deleting evento:", error);
-      alert("Error al eliminar el evento.");
+      showToast("Error al eliminar el evento.", "error");
     } else {
-      // Refrescar la lista (simple refresh)
-      fetchEventos();
+      showToast("Evento eliminado correctamente.", "success");
+      fetchEventos(); // Refrescar lista
     }
   };
 
