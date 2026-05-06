@@ -7,12 +7,16 @@ export const revalidate = 60; // Revalidar cada 60 segundos (ISR)
 export default async function HomePage() {
   const supabase = getSupabaseServerClient();
 
-  const { data: eventos } = await supabase
+  const { data: eventos, error } = await supabase
     .from("eventos")
     .select("*")
-    .gte("fecha_evento", new Date().toISOString()) // Solo eventos futuros
+    // .gte("fecha_evento", new Date().toISOString()) // <-- COMENTADO PARA PROBAR
     .order("fecha_evento", { ascending: true })
     .limit(6); // Mostrar solo los próximos 6
+
+  // LOGS PARA DEBUG (Mirá tu terminal de Next.js)
+  console.log("HomePage - Eventos fetched:", eventos);
+  if (error) console.error("HomePage - Error fetching:", error);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-50 font-sans">
@@ -33,7 +37,11 @@ export default async function HomePage() {
             Próximos Eventos
           </h2>
 
-          {(!eventos || eventos.length === 0) ? (
+          {error ? (
+             <div className="text-center py-10 text-red-500 border border-dashed rounded-lg">
+               Error al cargar eventos: {error.message}
+             </div>
+           ) : (!eventos || eventos.length === 0) ? (
             <div className="text-center py-10 text-zinc-500 border border-dashed rounded-lg">
               No hay eventos próximos por el momento. ¡Volvé pronto!
             </div>
@@ -65,7 +73,6 @@ export default async function HomePage() {
                       })}
                     </p>
                   </div>
-                  {/* Opcional: Link a detalle si lo implementamos después */}
                 </div>
               ))}
             </div>
@@ -75,7 +82,7 @@ export default async function HomePage() {
         {/* Call to Action */}
         <div className="mt-12 text-center">
           <Link
-            href="/dashboard/eventos"
+            href="/eventos"
             className="inline-flex items-center justify-center rounded-md bg-zinc-900 px-6 py-3 text-sm font-medium text-white shadow transition-colors hover:bg-zinc-700"
           >
             Administrar Eventos

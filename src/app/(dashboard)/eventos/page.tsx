@@ -26,7 +26,7 @@ export default function EventosPage() {
       .from("eventos")
       .select("*")
       .order("fecha_evento", { ascending: true });
-
+    console.log(data)
     if (error) {
       console.error("Error fetching eventos:", error);
       setError("No se pudieron cargar los eventos.");

@@ -6,6 +6,7 @@ export interface Evento {
   fecha_evento: string;
   fingerprint: string;
   fuente: string | null;
+  descripcion: string | null; // <-- Agregado
   created_at: string;
   updated_at: string;
 }
