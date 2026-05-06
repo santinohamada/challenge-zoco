@@ -28,7 +28,7 @@ export default function EventForm({
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -126,6 +126,23 @@ export default function EventForm({
           onChange={handleChange}
           className="h-12 w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-4 py-2 text-sm transition-all placeholder:text-zinc-400 hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
           placeholder="Ej: instagram, manual, n8n"
+        />
+      </div>
+
+      {/* Descripción (Generada por IA) */}
+      <div className="space-y-2">
+        <label htmlFor="descripcion" className="text-sm font-semibold text-zinc-700">
+          Descripción
+          <span className="ml-2 text-xs font-normal text-zinc-400">(Generada por IA)</span>
+        </label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          rows={4}
+          value={formData.descripcion ?? ""}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-4 py-3 text-sm transition-all placeholder:text-zinc-400 hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/20 resize-none"
+          placeholder="La IA generará una descripción automáticamente..."
         />
       </div>
 
