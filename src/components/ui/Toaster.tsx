@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useCallback } from "react";
 
 // Tipos
-type ToastType = "success" | "error" | "info";
+type ToastType = "success" | "error" | "info" | "warning";
 
 interface Toast {
   id: number;
@@ -56,6 +56,8 @@ export function Toaster({ toasts }: { toasts: Toast[] }) {
               ? "bg-green-600"
               : toast.type === "error"
               ? "bg-red-600"
+              : toast.type === "warning"
+              ? "bg-amber-500 text-zinc-900"
               : "bg-zinc-800"
           }`}
         >
