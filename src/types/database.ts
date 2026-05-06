@@ -11,5 +11,5 @@ export interface Evento {
   updated_at: string;
 }
 
-export type EventoInsert = Omit<Evento, 'id' | 'created_at' | 'updated_at'>;
+export type EventoInsert = Omit<Evento, 'id' | 'created_at' | 'updated_at'> & { descripcion?: string | null };
 export type EventoUpdate = Partial<EventoInsert> & { id: string };

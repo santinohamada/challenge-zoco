@@ -24,6 +24,7 @@ export default function EventForm({
       : "",
     fingerprint: initialData?.fingerprint ?? crypto.randomUUID(),
     fuente: initialData?.fuente ?? "manual",
+    descripcion: initialData?.descripcion ?? null,
   });
 
   const handleChange = (
