@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { Evento, EventoInsert } from "@/types/database";
+import { useToast } from "@/components/ui/Toaster";
 
 interface EventFormProps {
   initialData?: Evento;
@@ -27,6 +28,8 @@ export default function EventForm({
   onSubmit,
   isLoading = false,
 }: EventFormProps) {
+  const { showToast } = useToast();
+
   const [formData, setFormData] = useState<EventoInsert>({
     nombre: initialData?.nombre ?? "",
     lugar: initialData?.lugar ?? "",
@@ -82,14 +85,17 @@ export default function EventForm({
       });
 
       if (response.ok) {
-        const result = await response.json();
+        const responseData = await response.json();
+        // n8n returns an array as per the user's structure
+        const result = Array.isArray(responseData) ? responseData[0] : responseData;
         
-        if (result.isDuplicate && result.matchScore > 80) {
-          const proceed = window.confirm(
-            `⚠️ Posible duplicado detectado por IA:\n\n${result.reason}\n\n¿Deseas guardar este evento de todos modos?`
-          );
-          if (!proceed) {
-            return; // Detener ejecución si el usuario cancela
+        if (result?.isDuplicate) {
+          if (result.matchScore > 85) {
+            showToast(`Evento duplicado (${result.matchScore}%): ${result.reason}`, "error");
+            return; // Se detiene la ejecución, no se guarda en Supabase
+          } else if (result.matchScore >= 50 && result.matchScore <= 85) {
+            showToast(`Aviso de posible duplicado: ${result.reason}`, "warning");
+            // Sigue la ejecución normal y se guarda
           }
         }
       }
