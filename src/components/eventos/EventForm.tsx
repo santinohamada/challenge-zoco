@@ -64,14 +64,21 @@ export default function EventForm({
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const finalFingerprint = generarFingerprint(
-      formData.nombre ?? "",
-      formData.lugar ?? "",
-      formData.fecha_evento ?? ""
-    );
-    onSubmit({ ...formData, fingerprint: finalFingerprint });
-  };
+  e.preventDefault();
+  
+  const soloFecha = formData.fecha_evento?.split("T")[0] ?? "";
+
+  const finalFingerprint = generarFingerprint(
+    formData.nombre ?? "",
+    formData.lugar ?? "",
+    soloFecha 
+  );
+
+  onSubmit({ 
+    ...formData, 
+    fingerprint: finalFingerprint 
+  });
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
