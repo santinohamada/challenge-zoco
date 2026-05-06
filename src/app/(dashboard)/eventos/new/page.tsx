@@ -34,7 +34,7 @@ export default function NewEventoPage() {
 
     showToast("Evento creado exitosamente! 🎉", "success");
     setTimeout(() => {
-      router.push("/dashboard/eventos");
+      router.push("/eventos");
     }, 1000); // Pequeño delay para que vean el toast
   };
 

@@ -16,11 +16,11 @@ export default function DashboardLayout({
         <div className="container flex h-14 items-center">
           <nav className="flex items-center space-x-4 lg:space-x-6">
             <Link
-              href="/dashboard/eventos"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Eventos
-            </Link>
+               href="/eventos"
+               className="text-sm font-medium transition-colors hover:text-primary"
+             >
+               Eventos
+             </Link>
             {/* Acá más adelante podés agregar 'Bares' */}
           </nav>
         </div>

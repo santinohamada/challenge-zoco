@@ -39,7 +39,7 @@ export default function EventEditClient({ evento }: EventEditClientProps) {
 
     showToast("Evento actualizado correctamente!", "success");
     setTimeout(() => {
-      router.push("/dashboard/eventos");
+      router.push("/eventos");
       router.refresh();
     }, 1000);
   };

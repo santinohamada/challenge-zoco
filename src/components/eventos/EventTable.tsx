@@ -56,10 +56,10 @@ export default function EventTable({ eventos, onDelete }: EventTableProps) {
                 <td className="p-4 align-middle">{evento.lugar}</td>
                 <td className="p-4 align-middle">{new Date(evento.fecha_evento).toLocaleDateString("es-AR")}</td>
                 <td className="p-4 align-middle">{evento.categoria || "—"}</td>
-                <td className="p-4 align-middle text-right space-x-2">
-                  <button onClick={() => router.push(`/dashboard/eventos/${evento.id}`)} className="text-sm text-blue-600 hover:underline">Editar</button>
-                  <button onClick={() => handleDeleteClick(evento.id)} className="text-sm text-red-600 hover:underline">Eliminar</button>
-                </td>
+<td className="p-4 align-middle text-right space-x-2">
+                   <button onClick={() => router.push(`/eventos/${evento.id}`)} className="text-sm text-blue-600 hover:underline">Editar</button>
+                   <button onClick={() => handleDeleteClick(evento.id)} className="text-sm text-red-600 hover:underline">Eliminar</button>
+                 </td>
               </tr>
             ))}
           </tbody>
