@@ -22,14 +22,17 @@ export default async function EditEventoPage({ params }: EditEventoPageProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Editar Evento</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Editar Evento</h1>
+        <p className="mt-2 text-zinc-500">
           Modificá los datos del evento seleccionado.
         </p>
       </div>
-      <EventEditClient evento={evento} />
+
+      <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+        <EventEditClient evento={evento} />
+      </div>
     </div>
   );
 }

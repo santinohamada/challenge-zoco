@@ -11,21 +11,25 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          <nav className="flex items-center space-x-4 lg:space-x-6">
-            <Link
-               href="/eventos"
-               className="text-sm font-medium transition-colors hover:text-primary"
-             >
-               Eventos
-             </Link>
-            {/* Acá más adelante podés agregar 'Bares' */}
-          </nav>
-        </div>
-      </header>
-      <main className="flex-1 container py-6">{children}</main>
-    </div>
+    <div className="flex min-h-screen flex-col bg-zinc-50/50">
+       <header className="sticky top-0 z-10 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
+         <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 flex h-16 items-center">
+           <nav className="flex items-center space-x-6">
+             <Link
+                href="/eventos"
+                className="text-sm font-semibold transition-colors hover:text-zinc-900 text-zinc-600"
+              >
+                Eventos
+              </Link>
+             {/* Acá más adelante podés agregar 'Bares' */}
+           </nav>
+         </div>
+       </header>
+       <main className="flex-1">
+         <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
+           {children}
+         </div>
+       </main>
+     </div>
   );
 }

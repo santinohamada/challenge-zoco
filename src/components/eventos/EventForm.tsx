@@ -39,9 +39,10 @@ export default function EventForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl">
+      {/* Nombre */}
       <div className="space-y-2">
-        <label htmlFor="nombre" className="text-sm font-medium">
+        <label htmlFor="nombre" className="text-sm font-semibold text-zinc-700">
           Nombre del Evento
         </label>
         <input
@@ -51,13 +52,14 @@ export default function EventForm({
           required
           value={formData.nombre}
           onChange={handleChange}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-12 w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-4 py-2 text-sm transition-all placeholder:text-zinc-400 hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
           placeholder="Ej: Fiesta de la Vendimia"
         />
       </div>
 
+      {/* Lugar */}
       <div className="space-y-2">
-        <label htmlFor="lugar" className="text-sm font-medium">
+        <label htmlFor="lugar" className="text-sm font-semibold text-zinc-700">
           Lugar
         </label>
         <input
@@ -67,14 +69,15 @@ export default function EventForm({
           required
           value={formData.lugar}
           onChange={handleChange}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-12 w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-4 py-2 text-sm transition-all placeholder:text-zinc-400 hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
           placeholder="Ej: Plaza Independencia"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      {/* Grid: Fecha y Categoría */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div className="space-y-2">
-          <label htmlFor="fecha_evento" className="text-sm font-medium">
+          <label htmlFor="fecha_evento" className="text-sm font-semibold text-zinc-700">
             Fecha y Hora
           </label>
           <input
@@ -84,12 +87,12 @@ export default function EventForm({
             required
             value={formData.fecha_evento}
             onChange={handleChange}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="h-12 w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-4 py-2 text-sm transition-all hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
           />
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="categoria" className="text-sm font-medium">
+          <label htmlFor="categoria" className="text-sm font-semibold text-zinc-700">
             Categoría
           </label>
           <select
@@ -97,7 +100,7 @@ export default function EventForm({
             name="categoria"
             value={formData.categoria ?? ""}
             onChange={handleChange}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="h-12 w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-4 py-2 text-sm transition-all hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
           >
             <option value="">Seleccionar...</option>
             <option value="Música">Música</option>
@@ -109,8 +112,9 @@ export default function EventForm({
         </div>
       </div>
 
+      {/* Fuente */}
       <div className="space-y-2">
-        <label htmlFor="fuente" className="text-sm font-medium">
+        <label htmlFor="fuente" className="text-sm font-semibold text-zinc-700">
           Fuente
         </label>
         <input
@@ -119,27 +123,33 @@ export default function EventForm({
           type="text"
           value={formData.fuente ?? ""}
           onChange={handleChange}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-12 w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-4 py-2 text-sm transition-all placeholder:text-zinc-400 hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
           placeholder="Ej: instagram, manual, n8n"
         />
       </div>
 
-      <div className="flex gap-4">
+      {/* Botones */}
+      <div className="flex items-center gap-4 pt-4">
         <button
           type="submit"
           disabled={isLoading}
-          className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-zinc-800 hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading
-            ? "Guardando..."
-            : initialData
-            ? "Actualizar Evento"
-            : "Crear Evento"}
+          {isLoading ? (
+            <>
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+              Guardando...
+            </>
+          ) : (
+            <>
+              {initialData ? "Actualizar Evento" : "Crear Evento"}
+            </>
+          )}
         </button>
         <button
           type="button"
           onClick={() => window.history.back()}
-          className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex items-center justify-center rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-all hover:bg-zinc-50 hover:border-zinc-300 active:scale-[0.98]"
         >
           Cancelar
         </button>

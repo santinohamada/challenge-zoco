@@ -39,15 +39,17 @@ export default function NewEventoPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Crear Nuevo Evento</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Crear Nuevo Evento</h1>
+        <p className="mt-2 text-zinc-500">
           Completá los datos del evento para agregarlo a la lista.
         </p>
       </div>
 
-      <EventForm onSubmit={handleSubmit} isLoading={isLoading} />
+      <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+        <EventForm onSubmit={handleSubmit} isLoading={isLoading} />
+      </div>
     </div>
   );
 }
