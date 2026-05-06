@@ -49,7 +49,7 @@ export default function EventTable({ eventos, onDelete }: EventTableProps) {
               <th className="h-12 px-6 text-right align-middle font-semibold text-zinc-600">Acciones</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="stagger-rows">
             {eventos.map((evento, index) => (
               <tr 
                 key={evento.id} 

@@ -1,54 +1,41 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
+import { useCreateEvento } from "@/hooks/useEventos";
 import EventForm from "@/components/eventos/EventForm";
 import type { EventoInsert } from "@/types/database";
 import { useToast } from "@/components/ui/Toaster";
 
-// Evitar pre-renderizado estático ya que requiere variables de entorno
-export const dynamic = 'force-dynamic';
-
 export default function NewEventoPage() {
   const router = useRouter();
   const { showToast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const createEvento = useCreateEvento();
 
   const handleSubmit = async (data: EventoInsert) => {
-    setIsLoading(true);
-
-    const { error } = await supabase
-      .from("eventos")
-      .insert([data])
-      .select()
-      .single();
-
-    setIsLoading(false);
-
-    if (error) {
-      console.error("Error creating evento:", error);
-      showToast("Error al crear el evento. Verificá los datos.", "error");
-      return;
-    }
-
-    showToast("Evento creado exitosamente! 🎉", "success");
-    setTimeout(() => {
-      router.push("/eventos");
-    }, 1000); // Pequeño delay para que vean el toast
+    createEvento.mutate(data, {
+      onSuccess: () => {
+        showToast("Evento creado exitosamente! 🎉", "success");
+        setTimeout(() => {
+          router.push("/eventos");
+        }, 1000);
+      },
+      onError: () => {
+        showToast("Error al crear el evento. Verificá los datos.", "error");
+      },
+    });
   };
 
   return (
-    <div className="space-y-8 max-w-2xl">
-      <div>
+    <div className="space-y-8 max-w-2xl animate-fade-in-up">
+      <div className="animate-fade-in-down">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Crear Nuevo Evento</h1>
         <p className="mt-2 text-zinc-500">
           Completá los datos del evento para agregarlo a la lista.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
-        <EventForm onSubmit={handleSubmit} isLoading={isLoading} />
+      <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+        <EventForm onSubmit={handleSubmit} isLoading={createEvento.isPending} />
       </div>
     </div>
   );

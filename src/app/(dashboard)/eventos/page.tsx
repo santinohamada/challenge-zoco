@@ -1,42 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { useState, useMemo } from "react";
+import { useEventos, useDeleteEvento } from "@/hooks/useEventos";
 import EventTable from "@/components/eventos/EventTable";
 import Link from "next/link";
-import type { Evento } from "@/types/database";
 import { useToast } from "@/components/ui/Toaster";
 
-// Evitar pre-renderizado estático
-export const dynamic = "force-dynamic";
-
 export default function EventosPage() {
-  const [eventos, setEventos] = useState<Evento[]>([]);
-  const [filteredEventos, setFilteredEventos] = useState<Evento[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: eventos = [], isLoading, isError } = useEventos();
+  const deleteEvento = useDeleteEvento();
 
   // Estados para filtros
   const [filterCategoria, setFilterCategoria] = useState<string>("");
   const [filterFechaDesde, setFilterFechaDesde] = useState<string>("");
 
-  const fetchEventos = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("eventos")
-      .select("*")
-      .order("fecha_evento", { ascending: true });
-    if (error) {
-      console.error("Error fetching eventos:", error);
-      setError("No se pudieron cargar los eventos.");
-    } else {
-      setEventos(data || []);
-      setFilteredEventos(data || []);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
+  const filteredEventos = useMemo(() => {
     let result = eventos;
     if (filterCategoria) {
       result = result.filter((e) => e.categoria === filterCategoria);
@@ -45,38 +23,47 @@ export default function EventosPage() {
       const fechaDesde = new Date(filterFechaDesde);
       result = result.filter((e) => new Date(e.fecha_evento) >= fechaDesde);
     }
-    setFilteredEventos(result);
+    return result;
   }, [filterCategoria, filterFechaDesde, eventos]);
-
-  useEffect(() => {
-    fetchEventos();
-  }, []);
 
   const { showToast } = useToast();
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("eventos").delete().eq("id", id);
-    if (error) {
-      showToast("Error al eliminar el evento.", "error");
-    } else {
-      showToast("Evento eliminado correctamente.", "success");
-      fetchEventos();
-    }
+    deleteEvento.mutate(id, {
+      onSuccess: () => {
+        showToast("Evento eliminado correctamente.", "success");
+      },
+      onError: () => {
+        showToast("Error al eliminar el evento.", "error");
+      },
+    });
   };
 
-  if (loading)
+  if (isLoading)
     return (
-      <div className="flex items-center justify-center min-h-[500px]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-900 border-t-transparent"></div>
-          <p className="text-sm text-zinc-500">Cargando eventos...</p>
+      <div className="flex items-center justify-center min-h-[500px] animate-fade-in">
+        <div className="flex flex-col items-center gap-6">
+          {/* Skeleton loader */}
+          <div className="w-full max-w-2xl space-y-4">
+            <div className="h-8 w-48 rounded-lg animate-shimmer"></div>
+            <div className="h-4 w-72 rounded-lg animate-shimmer"></div>
+            <div className="mt-8 space-y-3">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-14 w-full rounded-xl animate-shimmer"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                ></div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
 
-  if (error)
+  if (isError)
     return (
-      <div className="flex items-center justify-center min-h-[500px]">
+      <div className="flex items-center justify-center min-h-[500px] animate-scale-in">
         <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center max-w-lg">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
             <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -84,7 +71,7 @@ export default function EventosPage() {
             </svg>
           </div>
           <p className="text-lg font-semibold text-red-700">Error al cargar</p>
-          <p className="text-sm text-red-500 mt-2">{error}</p>
+          <p className="text-sm text-red-500 mt-2">No se pudieron cargar los eventos.</p>
         </div>
       </div>
     );
@@ -92,7 +79,7 @@ export default function EventosPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-down">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Eventos</h1>
           <p className="text-sm text-zinc-500 mt-1">Gestioná los eventos de Zoco Tucumán</p>
@@ -110,7 +97,7 @@ export default function EventosPage() {
       </div>
 
       {/* Filtros */}
-      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm animate-fade-in-up" style={{ animationDelay: "80ms" }}>
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 space-y-2">
             <label htmlFor="filter-cat" className="text-sm font-medium text-zinc-700">
@@ -143,7 +130,7 @@ export default function EventosPage() {
             />
           </div>
           {(filterCategoria || filterFechaDesde) && (
-            <div className="flex items-end">
+            <div className="flex items-end animate-fade-in">
               <button
                 onClick={() => {
                   setFilterCategoria("");
@@ -159,7 +146,7 @@ export default function EventosPage() {
       </div>
 
       {/* Contador de resultados */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between animate-fade-in" style={{ animationDelay: "160ms" }}>
         <p className="text-sm text-zinc-500">
           Mostrando <span className="font-semibold text-zinc-900">{filteredEventos.length}</span> de{" "}
           <span className="font-semibold text-zinc-900">{eventos.length}</span> eventos
@@ -168,7 +155,7 @@ export default function EventosPage() {
 
       {/* Tabla / Lista vacía */}
       {filteredEventos.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
+        <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center animate-scale-in">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100">
             <svg className="h-8 w-8 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path
@@ -182,7 +169,7 @@ export default function EventosPage() {
           <p className="text-sm text-zinc-500 mt-1">No se encontraron eventos con los filtros seleccionados.</p>
         </div>
       ) : (
-        <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden animate-fade-in-up" style={{ animationDelay: "200ms" }}>
           <EventTable eventos={filteredEventos} onDelete={handleDelete} />
         </div>
       )}

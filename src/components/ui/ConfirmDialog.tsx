@@ -38,11 +38,11 @@ export default function ConfirmDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50"
+        className="fixed inset-0 bg-black/50 animate-fade-in"
         onClick={onCancel}
       />
       {/* Dialog */}
-      <div className="relative z-50 w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+      <div className="relative z-50 w-full max-w-md rounded-lg bg-white p-6 shadow-lg animate-scale-in">
         <h2 className="text-lg font-semibold">{title}</h2>
         <p className="mt-2 text-sm text-gray-600">{message}</p>
         <div className="mt-6 flex justify-end gap-3">
