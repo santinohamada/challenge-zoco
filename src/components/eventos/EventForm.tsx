@@ -11,6 +11,17 @@ interface EventFormProps {
 
 const CATEGORIAS = ["CULTURA", "NOCTURNO", "GASTRONOMÍA"] as const;
 
+export const generarFingerprint = (nombre: string, lugar: string, fecha: string) => {
+  const base = `${nombre}-${lugar}-${fecha}`;
+  return base
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Quita acentos
+    .replace(/[^a-z0-9]/g, "-")      // Reemplaza lo que no sea letra/número por guion
+    .replace(/-+/g, "-")             // Evita guiones dobles
+    .replace(/^-+|-+$/g, "");        // Equivalente a trim("-")
+};
+
 export default function EventForm({
   initialData,
   onSubmit,
@@ -23,7 +34,7 @@ export default function EventForm({
     fecha_evento: initialData?.fecha_evento
       ? new Date(initialData.fecha_evento).toISOString().slice(0, 16)
       : "",
-    fingerprint: initialData?.fingerprint ?? crypto.randomUUID(),
+    fingerprint: initialData?.fingerprint ?? "",
     fuente: initialData?.fuente ?? "manual",
     descripcion: initialData?.descripcion ?? null,
   });
@@ -38,7 +49,7 @@ export default function EventForm({
         fecha_evento: initialData.fecha_evento
           ? new Date(initialData.fecha_evento).toISOString().slice(0, 16)
           : "",
-        fingerprint: initialData.fingerprint ?? crypto.randomUUID(),
+        fingerprint: initialData.fingerprint ?? "",
         fuente: initialData.fuente ?? "manual",
         descripcion: initialData.descripcion ?? null,
       });
@@ -54,7 +65,12 @@ export default function EventForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    const finalFingerprint = generarFingerprint(
+      formData.nombre ?? "",
+      formData.lugar ?? "",
+      formData.fecha_evento ?? ""
+    );
+    onSubmit({ ...formData, fingerprint: finalFingerprint });
   };
 
   return (
