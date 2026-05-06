@@ -63,22 +63,53 @@ export default function EventForm({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  const soloFecha = formData.fecha_evento?.split("T")[0] ?? "";
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const finalFingerprint = generarFingerprint(
-    formData.nombre ?? "",
-    formData.lugar ?? "",
-    soloFecha 
-  );
+    const soloFecha = formData.fecha_evento?.split("T")[0] ?? "";
 
-  onSubmit({ 
-    ...formData, 
-    fingerprint: finalFingerprint 
-  });
-};
+    try {
+      const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || "TU_URL_DE_WEBHOOK_AQUÍ";
+      
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          lugar: formData.lugar,
+          fecha: soloFecha,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        
+        if (result.isDuplicate && result.matchScore > 80) {
+          const proceed = window.confirm(
+            `⚠️ Posible duplicado detectado por IA:\n\n${result.reason}\n\n¿Deseas guardar este evento de todos modos?`
+          );
+          if (!proceed) {
+            return; // Detener ejecución si el usuario cancela
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error validando con n8n:", err);
+      // Opcional: podrías decidir si permites guardar si falla el webhook o no. 
+      // Aquí continuamos con el guardado si n8n está caído.
+    }
+
+    const finalFingerprint = generarFingerprint(
+      formData.nombre ?? "",
+      formData.lugar ?? "",
+      soloFecha
+    );
+
+    onSubmit({
+      ...formData,
+      fingerprint: finalFingerprint,
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
