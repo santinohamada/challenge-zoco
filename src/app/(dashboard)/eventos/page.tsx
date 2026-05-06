@@ -54,7 +54,13 @@ export default function EventosPage() {
           showToast("Evento creado exitosamente! 🎉", "success");
           setModal(null);
         },
-        onError: () => showToast("Error al crear el evento.", "error"),
+        onError: (error: any) => {
+          if (error.message === "El evento ya existe.") {
+            showToast("Ya existe ese evento (mismo nombre, lugar y fecha).", "error");
+          } else {
+            showToast("Error al crear el evento.", "error");
+          }
+        },
       });
     } else {
       updateEvento.mutate(

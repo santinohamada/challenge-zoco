@@ -28,9 +28,22 @@ async function fetchEvento(id: string): Promise<Evento> {
 }
 
 async function createEvento(evento: EventoInsert): Promise<Evento> {
+  // Verificar si ya existe
+  if (evento.fingerprint) {
+    const { data: existing } = await supabase
+      .from("eventos")
+      .select("id")
+      .eq("fingerprint", evento.fingerprint)
+      .maybeSingle();
+
+    if (existing) {
+      throw new Error("El evento ya existe.");
+    }
+  }
+
   const { data, error } = await supabase
     .from("eventos")
-    .upsert(evento, { onConflict: "fingerprint" })
+    .insert([evento])
     .select()
     .single();
 
