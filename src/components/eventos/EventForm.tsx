@@ -81,6 +81,7 @@ export default function EventForm({
           nombre: formData.nombre,
           lugar: formData.lugar,
           fecha: soloFecha,
+          ...(initialData?.id && { id: initialData.id }),
         }),
       });
 

@@ -51,14 +51,11 @@ async function createEvento(evento: EventoInsert): Promise<Evento> {
   return data;
 }
 
-async function updateEvento({
-  id,
-  ...data
-}: EventoInsert & { id: string }): Promise<Evento> {
+async function updateEvento(input: EventoInsert & { id: string }): Promise<Evento> {
   const { data: updated, error } = await supabase
     .from("eventos")
-    .update(data)
-    .eq("id", id)
+    .update(input)
+    .eq("id", input.id)
     .select()
     .single();
 
