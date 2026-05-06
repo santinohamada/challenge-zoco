@@ -86,20 +86,19 @@ export default function EventForm({
 
       if (!response.ok) {
         showToast("No se pudo validar el evento con n8n (Error en la respuesta).", "error");
-        return; // No insertar si falla la petición
+        return;
       }
 
       const responseData = await response.json();
-      // n8n returns an array as per the user's structure
       const result = Array.isArray(responseData) ? responseData[0] : responseData;
-      
+      console.log(result);
       if (result?.isDuplicate) {
         if (result.matchScore > 85) {
           showToast(`Evento duplicado (${result.matchScore}%): ${result.reason}`, "error");
-          return; // Se detiene la ejecución, no se guarda en Supabase
+          return; 
         } else if (result.matchScore >= 50 && result.matchScore <= 85) {
           showToast(`Aviso de posible duplicado: ${result.reason}`, "warning");
-          // Sigue la ejecución normal y se guarda
+
         }
       }
     } catch (err) {
