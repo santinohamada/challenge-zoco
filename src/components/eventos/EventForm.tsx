@@ -84,25 +84,28 @@ export default function EventForm({
         }),
       });
 
-      if (response.ok) {
-        const responseData = await response.json();
-        // n8n returns an array as per the user's structure
-        const result = Array.isArray(responseData) ? responseData[0] : responseData;
-        
-        if (result?.isDuplicate) {
-          if (result.matchScore > 85) {
-            showToast(`Evento duplicado (${result.matchScore}%): ${result.reason}`, "error");
-            return; // Se detiene la ejecución, no se guarda en Supabase
-          } else if (result.matchScore >= 50 && result.matchScore <= 85) {
-            showToast(`Aviso de posible duplicado: ${result.reason}`, "warning");
-            // Sigue la ejecución normal y se guarda
-          }
+      if (!response.ok) {
+        showToast("No se pudo validar el evento con n8n (Error en la respuesta).", "error");
+        return; // No insertar si falla la petición
+      }
+
+      const responseData = await response.json();
+      // n8n returns an array as per the user's structure
+      const result = Array.isArray(responseData) ? responseData[0] : responseData;
+      
+      if (result?.isDuplicate) {
+        if (result.matchScore > 85) {
+          showToast(`Evento duplicado (${result.matchScore}%): ${result.reason}`, "error");
+          return; // Se detiene la ejecución, no se guarda en Supabase
+        } else if (result.matchScore >= 50 && result.matchScore <= 85) {
+          showToast(`Aviso de posible duplicado: ${result.reason}`, "warning");
+          // Sigue la ejecución normal y se guarda
         }
       }
     } catch (err) {
       console.error("Error validando con n8n:", err);
-      // Opcional: podrías decidir si permites guardar si falla el webhook o no. 
-      // Aquí continuamos con el guardado si n8n está caído.
+      showToast("Fallo al validar con n8n. No se guardará el evento.", "error");
+      return; // Detener ejecución si hay fallo en la red
     }
 
     const finalFingerprint = generarFingerprint(
