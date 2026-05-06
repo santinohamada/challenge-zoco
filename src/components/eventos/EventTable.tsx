@@ -120,9 +120,9 @@ export default function EventTable({ eventos, removingId, onDeleteRequest, onEdi
 
 function CategoryBadge({ categoria }: { categoria: string }) {
   const styles: Record<string, string> = {
-    Cultura: "bg-violet-100 text-violet-700",
-    Nocturno: "bg-indigo-100 text-indigo-700",
-    Gastronomía: "bg-amber-100 text-amber-700",
+    CULTURA: "bg-violet-100 text-violet-700",
+    NOCTURNO: "bg-indigo-100 text-indigo-700",
+    GASTRONOMÍA: "bg-amber-100 text-amber-700",
   };
   const cls = styles[categoria] ?? "bg-zinc-100 text-zinc-700";
   return (

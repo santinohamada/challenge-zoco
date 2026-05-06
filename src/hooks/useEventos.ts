@@ -30,7 +30,7 @@ async function fetchEvento(id: string): Promise<Evento> {
 async function createEvento(evento: EventoInsert): Promise<Evento> {
   const { data, error } = await supabase
     .from("eventos")
-    .insert([evento])
+    .upsert(evento, { onConflict: "fingerprint" })
     .select()
     .single();
 

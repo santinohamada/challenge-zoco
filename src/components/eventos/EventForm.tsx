@@ -9,7 +9,7 @@ interface EventFormProps {
   isLoading?: boolean;
 }
 
-const CATEGORIAS = ["Cultura", "Nocturno", "Gastronomía"] as const;
+const CATEGORIAS = ["CULTURA", "NOCTURNO", "GASTRONOMÍA"] as const;
 
 export default function EventForm({
   initialData,
