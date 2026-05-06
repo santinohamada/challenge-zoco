@@ -5,6 +5,10 @@ import { supabase } from "@/lib/supabase/client";
 import EventTable from "@/components/eventos/EventTable";
 import Link from "next/link";
 import type { Evento } from "@/types/database";
+import { useToast } from "@/components/ui/Toaster";
+
+// Evitar pre-renderizado estático
+export const dynamic = 'force-dynamic';
 
 export default function EventosPage() {
   const [eventos, setEventos] = useState<Evento[]>([]);

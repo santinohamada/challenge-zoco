@@ -2,6 +2,8 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import EventEditClient from "./EventEditClient";
 import { notFound } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+
 interface EditEventoPageProps {
   params: { id: string };
 }

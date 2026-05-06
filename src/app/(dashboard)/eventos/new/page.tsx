@@ -7,6 +7,9 @@ import EventForm from "@/components/eventos/EventForm";
 import type { EventoInsert } from "@/types/database";
 import { useToast } from "@/components/ui/Toaster";
 
+// Evitar pre-renderizado estático ya que requiere variables de entorno
+export const dynamic = 'force-dynamic';
+
 export default function NewEventoPage() {
   const router = useRouter();
   const { showToast } = useToast();

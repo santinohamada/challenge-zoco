@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import EventForm from "@/components/eventos/EventForm";
-import type { Evento, EventoUpdate } from "@/types/database";
+import type { Evento, EventoInsert } from "@/types/database";
 import { useToast } from "@/components/ui/Toaster";
 
 interface EventEditClientProps {
@@ -16,12 +16,15 @@ export default function EventEditClient({ evento }: EventEditClientProps) {
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (data: EventoUpdate) => {
+  const handleSubmit = async (data: EventoInsert) => {
     setIsLoading(true);
+
+    // En la edición, el ID ya lo tenemos, se lo agregamos a la data que viene del form
+    const updateData = { ...data, id: evento.id };
 
     const { error } = await supabase
       .from("eventos")
-      .update(data)
+      .update(updateData)
       .eq("id", evento.id)
       .select()
       .single();

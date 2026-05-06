@@ -5,6 +5,7 @@ import type { Evento, EventoInsert } from "@/types/database";
 
 interface EventFormProps {
   initialData?: Evento;
+  // El formulario siempre envía los campos base de EventoInsert
   onSubmit: (data: EventoInsert) => void;
   isLoading?: boolean;
 }
