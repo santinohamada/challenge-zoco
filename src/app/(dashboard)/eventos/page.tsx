@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useEventos, useCreateEvento, useUpdateEvento, useDeleteEvento } from "@/hooks/useEventos";
 import EventTable from "@/components/eventos/EventTable";
 import EventModal from "@/components/eventos/EventModal";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import type { Evento, EventoInsert } from "@/types/database";
 import { useToast } from "@/components/ui/Toaster";
 import { CATEGORIAS } from "@/components/eventos/EventForm";
@@ -21,6 +22,10 @@ export default function EventosPage() {
   const deleteEvento = useDeleteEvento();
 
   const [modal, setModal] = useState<ModalState>(null);
+
+  // Estado de eliminación — manejado aquí, no en la tabla
+  const [confirmEvento, setConfirmEvento] = useState<Evento | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
   // Filtros
   const [filterCategoria, setFilterCategoria] = useState<string>("");
@@ -65,11 +70,18 @@ export default function EventosPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteConfirm = async () => {
+    if (!confirmEvento) return;
+    const id = confirmEvento.id;
+    setConfirmEvento(null);
+    setRemovingId(id);
+    // Wait for row exit animation
+    await new Promise((r) => setTimeout(r, 350));
     deleteEvento.mutate(id, {
       onSuccess: () => showToast("Evento eliminado.", "success"),
       onError: () => showToast("Error al eliminar el evento.", "error"),
     });
+    setRemovingId(null);
   };
 
   if (isLoading)
@@ -198,14 +210,15 @@ export default function EventosPage() {
           <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden animate-fade-in-up" style={{ animationDelay: "200ms" }}>
             <EventTable
               eventos={filteredEventos}
-              onDelete={handleDelete}
+              removingId={removingId}
+              onDeleteRequest={setConfirmEvento}
               onEdit={(evento) => setModal({ mode: "edit", evento })}
             />
           </div>
         )}
       </div>
 
-      {/* Modal create/edit */}
+      {/* Modal create/edit — renderizado en el root, fuera de cualquier transform */}
       <EventModal
         isOpen={modal !== null}
         mode={modal?.mode ?? "create"}
@@ -213,6 +226,18 @@ export default function EventosPage() {
         isLoading={isModalLoading}
         onSubmit={handleModalSubmit}
         onClose={() => !isModalLoading && setModal(null)}
+      />
+
+      {/* ConfirmDialog — renderizado en el root, sin stacking context problemático */}
+      <ConfirmDialog
+        isOpen={confirmEvento !== null}
+        title="Eliminar evento"
+        message={`¿Eliminás "${confirmEvento?.nombre}"? Esta acción no se puede deshacer.`}
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+        isDestructive
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setConfirmEvento(null)}
       />
     </>
   );
