@@ -25,7 +25,6 @@ export default function EventosPage() {
 
   // Estado de eliminación — manejado aquí, no en la tabla
   const [confirmEvento, setConfirmEvento] = useState<Evento | null>(null);
-  const [removingId, setRemovingId] = useState<string | null>(null);
 
   // Filtros
   const [filterCategoria, setFilterCategoria] = useState<string>("");
@@ -76,18 +75,14 @@ export default function EventosPage() {
     }
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (!confirmEvento) return;
     const id = confirmEvento.id;
     setConfirmEvento(null);
-    setRemovingId(id);
-    // Wait for row exit animation
-    await new Promise((r) => setTimeout(r, 350));
     deleteEvento.mutate(id, {
       onSuccess: () => showToast("Evento eliminado.", "success"),
       onError: () => showToast("Error al eliminar el evento.", "error"),
     });
-    setRemovingId(null);
   };
 
   if (isLoading)
@@ -214,12 +209,11 @@ export default function EventosPage() {
           </div>
         ) : (
           <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden animate-fade-in-up" style={{ animationDelay: "200ms" }}>
-            <EventTable
-              eventos={filteredEventos}
-              removingId={removingId}
-              onDeleteRequest={setConfirmEvento}
-              onEdit={(evento) => setModal({ mode: "edit", evento })}
-            />
+              <EventTable
+                eventos={filteredEventos}
+                onDeleteRequest={setConfirmEvento}
+                onEdit={(evento) => setModal({ mode: "edit", evento })}
+              />
           </div>
         )}
       </div>

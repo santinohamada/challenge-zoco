@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { Evento, EventoInsert } from "@/types/database";
 import { useToast } from "@/components/ui/Toaster";
+import { useN8nValidation } from "@/hooks/useN8nValidation";
 
 interface EventFormProps {
   initialData?: Evento;
@@ -29,6 +30,7 @@ export default function EventForm({
   isLoading = false,
 }: EventFormProps) {
   const { showToast } = useToast();
+  const { validate } = useN8nValidation();
 
   const [formData, setFormData] = useState<EventoInsert>({
     nombre: initialData?.nombre ?? "",
@@ -71,42 +73,14 @@ export default function EventForm({
 
     const soloFecha = formData.fecha_evento?.split("T")[0] ?? "";
 
-    try {
-      const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || "TU_URL_DE_WEBHOOK_AQUÍ";
-      
-      const response = await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre: formData.nombre,
-          lugar: formData.lugar,
-          fecha: soloFecha,
-          ...(initialData?.id && { id: initialData.id }),
-        }),
-      });
+    const isValid = await validate({
+      nombre: formData.nombre,
+      lugar: formData.lugar,
+      fecha: soloFecha,
+      id: initialData?.id,
+    });
 
-      if (!response.ok) {
-        showToast("No se pudo validar el evento con n8n (Error en la respuesta).", "error");
-        return;
-      }
-
-      const responseData = await response.json();
-      const result = Array.isArray(responseData) ? responseData[0] : responseData;
-      console.log(result);
-      if (result?.isDuplicate) {
-        if (result.matchScore > 85) {
-          showToast(`Evento duplicado (${result.matchScore}%): ${result.reason}`, "error");
-          return; 
-        } else if (result.matchScore >= 50 && result.matchScore <= 85) {
-          showToast(`Aviso de posible duplicado: ${result.reason}`, "warning");
-
-        }
-      }
-    } catch (err) {
-      console.error("Error validando con n8n:", err);
-      showToast("Fallo al validar con n8n. No se guardará el evento.", "error");
-      return; // Detener ejecución si hay fallo en la red
-    }
+    if (!isValid) return;
 
     const finalFingerprint = generarFingerprint(
       formData.nombre ?? "",
