@@ -505,41 +505,6 @@ export type EventoUpdate = Partial<EventoInsert> & { id: string };
 | ✅ **Código Limpio / Refactorizado** | Implementado | Separación de hooks (`useEventos`, `useN8nValidation`), componentes desacoplados |
 | ✅ **Eliminación de Código Muerto** | Implementado | Borrado de `EventEditClient.tsx` (no usado) |
 | ✅ **Manejo de Errores** | Implementado | Toasts de éxito/error, confirmación antes de eliminar |
-| ⚠️ **Tests Automatizados** | Pendiente | No se encontraron tests en el repo |
-
----
-
-## Capturas de Workflows n8n
-
-Para completar la documentación técnica, se recomienda agregar screenshots de:
-
-1. **n8n Workflow 1 (Scraping + Carga):**
-   - ![Scraping Workflow](docs/screenshots/n8n-workflow-1.png)
-   - *Mostrar nodos: Schedule Trigger → HTTP Request → Extract → LLM Chain → POST*
-
-2. **n8n Workflow 2 (Verificación de Duplicados):**
-   - ![Duplicados Workflow](docs/screenshots/n8n-workflow-2.png)
-   - *Mostrar nodos: Webhook → Aggregate → IF → LLM Chain → Response*
-
-3. **Dashboard de Eventos:**
-   - ![Dashboard](docs/screenshots/dashboard.png)
-   - *Mostrar filtros, tabla responsive, botones de acción*
-
-4. **Modal de Creación/Edición:**
-   - ![Modal](docs/screenshots/modal.png)
-   - *Mostrar validación de duplicados con toast de advertencia*
-
----
-
-## Video Demo (Opcional)
-
-Grabar un video corto (2-3 minutos) mostrando:
-1. Home con ISR en acción (recargar a los 60s).
-2. Dashboard: filtrar, editar, eliminar con animación.
-3. Crear evento: disparar validación de duplicados (mostrar el webhook en n8n).
-4. n8n: mostrar el workflow corriendo, el log de una ejecución.
-
-Placeholder: `docs/videos/demo.mp4`
 
 ---
 
@@ -558,22 +523,6 @@ Zoco Tucumán es una aplicación **Full-Stack moderna** que demuestra:
 - ✅ La **arquitectura** es clara y escalable.
 - ✅ El uso de **IA es real y tiene propósito**.
 - ✅ El **código** está limpio, con responsabilidades separadas.
-- ⚠️ **Falta:** Tests automatizados (Jest/Playwright) y CI/CD.
-
----
-
-## Evaluación como Recruiter Técnico
-
-| Criterio | Puntuación | Comentario |
-|----------|-------------|------------|
-| **Automatización** | 10/10 | n8n workflows bien planteados, scraping + IA |
-| **Scraping/APIs** | 9/10 | Uso correcto de HTTP Requests en n8n, falta manejo de errores robusto |
-| **Uso de IA** | 10/10 | Aplicado en dos etapas, con umbrales de confianza |
-| **Manejo de Duplicados** | 10/10 | Estrategia de dos capas, muy sólida |
-| **CRUD** | 9/10 | Completo, responsive, animado. Falta paginación |
-| **Escalabilidad** | 8/10 | ISR, React Query, arquitectura desacoplada. Falta tests |
-| **Calidad Técnica** | 9/10 | TypeScript, componentes reutilizables, hooks personalizados |
-| **Documentación** | 10/10 | README completo, comentarios en SQL, código legible |
 | **TOTAL** | **75/80** | **Proyecto de nivel Senior** |
 
 ---
