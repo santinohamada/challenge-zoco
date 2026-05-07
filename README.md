@@ -15,21 +15,6 @@ El sistema resuelve el problema de la **dispersión de información**: los event
 
 ---
 
-## Demo / Screenshots
-
-| Vista | Descripción |
-|-------|--------------|
-| ![Home](docs/screenshots/home.png) | Landing page con ISR (60s) mostrando próximos eventos |
-| ![Dashboard](docs/screenshots/dashboard.png) | Dashboard de gestión con tabla responsive y filtros |
-| ![Modal](docs/screenshots/modal.png) | Modal de creación/edición con validación n8n |
-| ![Confirm](docs/screenshots/confirm.png) | Diálogo de confirmación para eliminación |
-| ![n8n Workflow 1](docs/screenshots/n8n-scraping.png) | Workflow n8n: Scraping + Carga |
-| ![n8n Workflow 2](docs/screenshots/n8n-duplicates.png) | Workflow n8n: Verificación de duplicados |
-
-> **Nota:** Reemplazar las rutas `docs/screenshots/` con las imágenes reales del proyecto.
-
----
-
 ## Arquitectura del Sistema
 
 ### Diagrama de Alto Nivel
